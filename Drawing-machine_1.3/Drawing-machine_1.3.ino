@@ -18,6 +18,7 @@ x90$ y70$ z90$  x-80$ y-70$
 
 */
 
+
 //Moteur pas a pas config 
 
 // Motor steps per revolution. Most steppers are 200 steps or 1.8 degrees/step
@@ -35,27 +36,28 @@ x90$ y70$ z90$  x-80$ y-70$
 BasicStepperDriver stepperx(MOTOR_STEPS, DIRx, STEPx);
 BasicStepperDriver steppery(MOTOR_STEPS, DIRy, STEPy);
 
+//calcul de positionnement et deplacement
 int posX;
 int pastX = 0;
 int posY;
 int pastY = 0;
+boolean posZ = false;
 
-
+// comunication
 int x =0;
 int tmp_x =0;
-boolean negX = false;
 
 int y =0;
 int tmp_y =0;
-boolean negY = false;
 
 int z =0;
 int tmp_z =0;
 
-
+// Servo motor
 int ser;
 int attache = 6;
 
+// capteur fin de course
 int bp_x = 1;
 int bp_y = 1;
 int entbp_x = 12;
@@ -101,21 +103,23 @@ void setup() {
 void loop() {
 
 detection();
-positions();
-deplacement();
-
+if (posX != 0 or posY != 0 or posZ == true){
+  positions();
+  deplacement();
+}
 }
 void positions(){
   
-  x = pastX + (posX-pastX);
-  y = pastY + (posY-pastY);
+  x = pastX-posX;
+  y = pastY-posY;
 
 
-    pastX = x+posX;
-    pastY = y+posY;
+    pastX = posX;
+    pastY = posY;
 
  posX = 0;
  posY = 0;
+ posZ = false;
   
   
   }
@@ -138,19 +142,10 @@ void detection(){
             if ( ser == 36){        //Si les signe $ (signe de fin de commande) est donner
               break;
             }
-            if (ser == 45){         //si il y a un signe negatif
-               negX = true;
-            }
               
             if ( ser >= 0) {        //Memoire du nombre
               tmp_x = (tmp_x * 10) + (ser-48);                     
             }
-          }
-
-
-          if (negX == true){        //mise en place du signe negatif
-            tmp_x = tmp_x *-1;
-            negX = false;
           }
           
           posX = tmp_x;
@@ -167,19 +162,13 @@ void detection(){
               break;
             }
             
-            if (ser == 45){       //si il y a un signe negatif
-               negY = true;
-            }
             
             if ( ser >= 0) {      //Memoire du nombre
               tmp_y = (tmp_y * 10) + (ser-48);                    
             }
           }
           
-            if (negY == true){     //mise en place du signe negatif
-              tmp_y = tmp_y *-1;
-              negY = false;
-          }
+
           posY = tmp_y;
           tmp_y = 0;
           
@@ -190,6 +179,7 @@ void detection(){
           case 122:  //pour detecter z 
           while (ser != 36){
             ser = Serial.read();
+            posZ = true;
             if ( ser == 36){
               break;
             }
@@ -197,6 +187,9 @@ void detection(){
             if ( ser >= 0) {
             tmp_z = (tmp_z * 10) + (ser-48); 
             }
+            z=tmp_z;
+            tmp_z=0;
+            
             break;
           }
       }
