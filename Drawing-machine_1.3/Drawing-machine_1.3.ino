@@ -23,7 +23,7 @@ x90$ y70$ z90$  x-80$ y-70$
 
 // Motor steps per revolution. Most steppers are 200 steps or 1.8 degrees/step
 #define MOTOR_STEPS 200
-#define RPM 150
+#define RPM 100
 
 #define MICROSTEPS 4
 
@@ -63,19 +63,19 @@ int bp_y = 1;
 int entbp_x = 12;
 int entbp_y = 13;
 
-void reset(){
+void reset(){  
     
 while(bp_x == 1){
       stepperx.move(-4);
       bp_x = digitalRead(entbp_x);
    }
-    x=0;
+    past_x=0;
     
     while(bp_y == 1){
       steppery.move(-4);
       bp_y = digitalRead(entbp_y);
    }
-    y=0;
+    past_y=0;
   
 }
 
