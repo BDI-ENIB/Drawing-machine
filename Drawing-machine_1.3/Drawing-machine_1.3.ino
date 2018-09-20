@@ -1,4 +1,3 @@
-#include <Arduino.h>
 #include "BasicStepperDriver.h"
 #include <Servo.h>
 
@@ -25,7 +24,7 @@ x90$ y70$ z90$  x-80$ y-70$
 #define MOTOR_STEPS 200
 #define RPM 150
 
-#define MICROSTEPS 1
+#define MICROSTEPS 4
 
 #define DIRx 8
 #define STEPx 9
@@ -55,10 +54,26 @@ int tmp_z =0;
 
 
 int ser;
-
 int attache = 6;
 
+boolean bp_x = false
+boolean bp_y = false
 
+void reset(){
+
+   while(bp_x=false){
+      x=x-1
+      stepperx.move(x);
+   }
+    x=0
+    
+    while(bp_y=false){
+      y=y-1
+      stepperx.move(y);
+   }
+    y=0
+  
+}
 
 
 void setup() {
@@ -70,6 +85,8 @@ void setup() {
 
    //servo motor
     servo.attach(attache);
+
+    reset();
 
    //Start
     Serial.print("Demar");
@@ -84,11 +101,12 @@ deplacement();
 
 }
 void positions(){
-  x = abs(pastX) + (posX-pastX);
-  y = abs(pastY) + (posY-pastY);
+  x = posX-pastX;
+  y = posY-pastY;
 
 
-    pastX = x+posX;
+    pastX = posX;
+    pastY = posY;
 
  posX = 0;
  posY = 0;
