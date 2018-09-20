@@ -64,15 +64,14 @@ int entbp_y = 13;
 void reset(){
     
    while(bp_x==false){
-      x=x-1;
-      stepperx.move(x);
+      stepperx.move(4);
       bp_x=digitalRead(entbp_x);
    }
     x=0;
     
     while(bp_y==false){
-      y=y-1;
-      steppery.move(y);
+
+      steppery.move(4);
       bp_y=digitalRead(entbp_y);
    }
     y=0;
