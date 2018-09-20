@@ -56,21 +56,21 @@ int tmp_z =0;
 int ser;
 int attache = 6;
 
-boolean bp_x = false
-boolean bp_y = false
+boolean bp_x = false;
+boolean bp_y = false;
 
 void reset(){
     
-   while(bp_x=false){
+   while(bp_x==false){
       x=x-1;
       stepperx.move(x);
       digitalRead(bp_x);
    }
     x=0;
     
-    while(bp_y=false){
+    while(bp_y==false){
       y=y-1;
-      stepperx.move(y);
+      steppery.move(y);
       digitalRead(bp_y);
    }
     y=0;
