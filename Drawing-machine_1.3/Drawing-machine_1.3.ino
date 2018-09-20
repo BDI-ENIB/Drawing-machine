@@ -56,23 +56,22 @@ int tmp_z =0;
 int ser;
 int attache = 6;
 
-boolean bp_x = false;
-boolean bp_y = false;
+int bp_x = 1;
+int bp_y = 1;
 int entbp_x = 12;
 int entbp_y = 13;
 
 void reset(){
     
-   while(bp_x==false){
-      stepperx.move(4);
-      bp_x=digitalRead(entbp_x);
+while(bp_x == 1){
+      stepperx.move(-4);
+      bp_x = digitalRead(entbp_x);
    }
     x=0;
     
-    while(bp_y==false){
-
-      steppery.move(4);
-      bp_y=digitalRead(entbp_y);
+    while(bp_y == 1){
+      steppery.move(-4);
+      bp_y = digitalRead(entbp_y);
    }
     y=0;
   
@@ -89,6 +88,9 @@ void setup() {
    //servo motor
     servo.attach(attache);
 
+    pinMode(entbp_x, INPUT_PULLUP);
+    pinMode(entbp_y, INPUT_PULLUP);
+
     reset();
 
    //Start
@@ -104,12 +106,13 @@ deplacement();
 
 }
 void positions(){
-  x = posX-pastX;
-  y = posY-pastY;
+  
+  x = pastX + (posX-pastX);
+  y = pastY + (posY-pastY);
 
 
-    pastX = posX;
-    pastY = posY;
+    pastX = x+posX;
+    pastY = y+posY;
 
  posX = 0;
  posY = 0;
