@@ -60,18 +60,20 @@ boolean bp_x = false
 boolean bp_y = false
 
 void reset(){
-
+    
    while(bp_x=false){
-      x=x-1
+      x=x-1;
       stepperx.move(x);
+      digitalRead(bp_x);
    }
-    x=0
+    x=0;
     
     while(bp_y=false){
-      y=y-1
+      y=y-1;
       stepperx.move(y);
+      digitalRead(bp_y);
    }
-    y=0
+    y=0;
   
 }
 
