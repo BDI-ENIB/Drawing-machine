@@ -58,20 +58,22 @@ int attache = 6;
 
 boolean bp_x = false;
 boolean bp_y = false;
+int entbp_x = 12;
+int entbp_y = 13;
 
 void reset(){
     
    while(bp_x==false){
       x=x-1;
       stepperx.move(x);
-      digitalRead(bp_x);
+      bp_x=digitalRead(entbp_x);
    }
     x=0;
     
     while(bp_y==false){
       y=y-1;
       steppery.move(y);
-      digitalRead(bp_y);
+      bp_y=digitalRead(entbp_y);
    }
     y=0;
   
