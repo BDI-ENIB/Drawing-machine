@@ -73,13 +73,13 @@ while(bp_x == 1){
       stepperx.move(-4);
       bp_x = digitalRead(entbp_x);
    }
-    past_x=0;
+    pastX=0;
     
     while(bp_y == 1){
       steppery.move(-4);
       bp_y = digitalRead(entbp_y);
    }
-    past_y=0;
+    pastY=0;
   
 }
 
