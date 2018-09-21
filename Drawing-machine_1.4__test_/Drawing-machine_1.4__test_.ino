@@ -1,4 +1,7 @@
 #include "BasicStepperDriver.h"
+#include "MultiDriver.h"
+#include "SyncDriver.h"
+
 #include <Servo.h>
 
 
@@ -35,6 +38,7 @@ x90$ y70$ z90$  x-80$ y-70$
 
 BasicStepperDriver stepperx(MOTOR_STEPS, DIRx, STEPx);
 BasicStepperDriver steppery(MOTOR_STEPS, DIRy, STEPy);
+SyncDriver controller(stepperx, steppery);
 
 //calcul de positionnement et deplacement
 int posX;
@@ -127,8 +131,7 @@ void deplacement(){
 
   servo.write(z);
   
-  stepperx.move(x);
-  steppery.move(y);
+  controller.move(x,y);
   
   
   }
@@ -141,7 +144,7 @@ void detection(){
         case 120:                   //pour detecter x 
           while (ser != 32){
             ser = Serial.read();
-            if ( ser == 32){        //Si  le signe " "(espace) (signe de fin de commande) est donner
+            if ( ser == 32){       //Si le signe " "(espace) (signe de fin de commande) est donner 
               break;
             }
               
@@ -160,7 +163,7 @@ void detection(){
           while (ser != 32){
             ser = Serial.read();
             
-            if ( ser == 32){      //Si le signe " "(espace) (signe de fin de commande) est donner
+            if ( ser == 32){      //Si les signe " "(espace) (signe de fin de commande) est donner
               break;
             }
             
@@ -182,7 +185,7 @@ void detection(){
           while (ser != 32){
             ser = Serial.read();
             posZ = true;
-            if ( ser == 32){//Si le signe " "(espace) (signe de fin de commande) est donner
+            if ( ser == 32){      //Si le signe " "(espace) (signe de fin de commande) est donner
               break;
             }
             
