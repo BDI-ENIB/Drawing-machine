@@ -54,8 +54,8 @@ int tmp_x = 0;
 int y = 0;
 int tmp_y = 0;
 
-int z = 0;
-int tmp_z = 0;
+int z = 30;
+boolean tmp_z = false;
 
 int ser = 0;
 
@@ -128,7 +128,8 @@ void positions() {
   posZ = false;
 }
 void deplacement() {
-  Serial.println("position");
+  Serial.println("deplacement");
+ 
   servo.write(z);
 
   controller.move(x, y);
@@ -145,7 +146,7 @@ void detection() {
         case 120:                   //pour detecter x
           Serial.println("coordonee x");
           while (ser != 32) {
-            if ( ser == 32) {      //Si le signe " "(espace) (signe de fin de commande) est donner
+            if ( ser == 32 or ser == 36) {      //Si le signe " "(espace) (signe de fin de commande) est donner
               Serial.print("sortie x = ");
               break;
             }
@@ -167,7 +168,7 @@ void detection() {
         case 121:                 //pour detecter y
           while (ser != 32) {
 
-            if ( ser == 32) {     //Si le signe " "(espace) (signe de fin de commande) est donner
+            if ( ser == 32 or ser == 36) {     //Si le signe " "(espace) (signe de fin de commande) est donner
               break;
             }
 
@@ -188,17 +189,24 @@ void detection() {
         case 122:  //pour detecter z
           while (ser != 32) {
             posZ = true;
-            if ( ser == 32) {     //Si le signe " "(espace) (signe de fin de commande) est donner
+            if ( ser == 32 or ser == 36) {     //Si le signe " "(espace) (signe de fin de commande) est donner
               break;
             }
 
-            if ( ser >= 48 and ser <= 57) {
-              tmp_z = (tmp_z * 10) + (ser - 48);
+            if ( ser > 48 and ser <= 57) {
+              tmp_z = true;
             }
             ser = Serial.read();
-            z = tmp_z;
-            tmp_z = 0;
+            if (tmp_z==true){
+              z=90;
+            }
+            else {
+              z=0;
+            }
+           
+            
           }
+          tmp_z = false;
       }
     }
 
