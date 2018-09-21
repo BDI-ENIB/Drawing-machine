@@ -57,8 +57,9 @@ int tmp_y = 0;
 int z = 0;
 int tmp_z = 0;
 
+int ser = 0;
+
 // Servo motor
-int ser;
 int attache = 6;
 
 // capteur fin de course
@@ -70,6 +71,7 @@ int entbp_y = 13;
 void reset() {
 
   servo.write(90);
+  Serial.println("mise a reset");
 
   while (bp_x == 1) {
     stepperx.move(-4);
@@ -82,7 +84,6 @@ void reset() {
     bp_y = digitalRead(entbp_y);
   }
   pastY = 0;
-
 }
 
 
@@ -116,9 +117,8 @@ void loop() {
 }
 void positions() {
 
-  x = pastX - posX;
-  y = pastY - posY;
-
+  x = posX - pastX;
+  y = posY - pastY;
 
   pastX = posX;
   pastY = posY;
@@ -126,11 +126,9 @@ void positions() {
   posX = 0;
   posY = 0;
   posZ = false;
-
-
 }
 void deplacement() {
-
+  Serial.println("position");
   servo.write(z);
 
   controller.move(x, y);
@@ -138,68 +136,73 @@ void deplacement() {
 
 }
 void detection() {
-  ser = Serial.read();
+  Serial.println("entree boucle detection");
+  while (ser != 36) {
+    ser = Serial.read();
+    if ( ser > 0) {
+      switch (ser) {                        //Dection des entres du serial
 
-  if ( ser > 0) {
-    switch (ser) {                        //Dection des entres du serial
+        case 120:                   //pour detecter x
+          Serial.println("coordonee x");
+          while (ser != 32) {
+            if ( ser == 32) {      //Si le signe " "(espace) (signe de fin de commande) est donner
+              Serial.print("sortie x = ");
+              break;
+            }
 
-      case 120:                   //pour detecter x
-        while (ser != 32) {
-          ser = Serial.read();
-          if ( ser == 32) {      //Si le signe " "(espace) (signe de fin de commande) est donner
-            break;
+            if ( ser >= 48 and ser <= 57) {       //Memoire du nombre
+              tmp_x = (tmp_x * 10) + (ser - 48);
+              Serial.print("x = ");
+              Serial.println(tmp_x);
+            }
+            ser = Serial.read();
+          }
+          posX = tmp_x;
+          Serial.println(posX);
+          tmp_x = 0;
+
+
+
+
+        case 121:                 //pour detecter y
+          while (ser != 32) {
+
+            if ( ser == 32) {     //Si le signe " "(espace) (signe de fin de commande) est donner
+              break;
+            }
+
+            if ( ser >= 48 and ser <= 57) {     //Memoire du nombre
+              tmp_y = (tmp_y * 10) + (ser - 48);
+            }
+            ser = Serial.read();
           }
 
-          if ( ser >= 0) {        //Memoire du nombre
-            tmp_x = (tmp_x * 10) + (ser - 48);
+
+          posY = tmp_y;
+          tmp_y = 0;
+
+
+
+
+
+        case 122:  //pour detecter z
+          while (ser != 32) {
+            posZ = true;
+            if ( ser == 32) {     //Si le signe " "(espace) (signe de fin de commande) est donner
+              break;
+            }
+
+            if ( ser >= 48 and ser <= 57) {
+              tmp_z = (tmp_z * 10) + (ser - 48);
+            }
+            ser = Serial.read();
+            z = tmp_z;
+            tmp_z = 0;
           }
-        }
-
-        posX = tmp_x;
-        tmp_x = 0;
-        break;
-
-
-
-      case 121:                 //pour detecter y
-        while (ser != 32) {
-          ser = Serial.read();
-
-          if ( ser == 32) {     //Si les signe " "(espace) (signe de fin de commande) est donner
-            break;
-          }
-
-
-          if ( ser >= 0) {      //Memoire du nombre
-            tmp_y = (tmp_y * 10) + (ser - 48);
-          }
-        }
-
-
-        posY = tmp_y;
-        tmp_y = 0;
-
-        break;
-
-
-
-      case 122:  //pour detecter z
-        while (ser != 32) {
-          ser = Serial.read();
-          posZ = true;
-          if ( ser == 32) {     //Si le signe " "(espace) (signe de fin de commande) est donner
-            break;
-          }
-
-          if ( ser >= 0) {
-            tmp_z = (tmp_z * 10) + (ser - 48);
-          }
-          z = tmp_z;
-          tmp_z = 0;
-
-          break;
-        }
+      }
     }
-  }
-}
 
+  }
+  Serial.println("sortie boucle detection");
+  ser = 0;
+}
