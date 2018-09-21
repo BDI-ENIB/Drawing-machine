@@ -68,6 +68,8 @@ int entbp_x = 12;
 int entbp_y = 13;
 
 void reset(){  
+
+  servo.write(90);
     
 while(bp_x == 1){
       stepperx.move(-4);
